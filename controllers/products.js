@@ -3,10 +3,27 @@ const Product = require('../models/product')
 
 const getAllProductsStatic = async (req, res) => {
     try {
-        const products = await Product.find(req.query)
-        console.log(req.query)
+      const {featured, company, name } = req.query
+      const queryObject = {}
+      if (featured) {
+        if (featured == true) {
+          queryObject.featured = true
+        }
+        else{
+          queryObject.featured = false
+        }
+      }
+      if(company){
+        queryObject.company = company
+      }
+
+      if(name){
+        queryObject.name = { $regex: name, $options: 'i' }  
+      }
+      
+        const products = await Product.find(queryObject).sort('name')
         if(products.length === 0){
-          res.send("No products in the database");
+          res.send("No products with the following filters exist !");
         }
         else{
           res.status(200).json({ products, nbHits: products.length });
