@@ -20,8 +20,10 @@ const getAllProductsStatic = async (req, res) => {
       if(name){
         queryObject.name = { $regex: name, $options: 'i' }  
       }
+
       
-        const products = await Product.find(queryObject).sort('name')
+      
+        const products = await Product.find(queryObject).sort('name').limit(10)
         if(products.length === 0){
           res.send("No products with the following filters exist !");
         }
@@ -35,7 +37,8 @@ const getAllProductsStatic = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    res.status(200).json({ msg: "Products route" });
+    const products = await Product.find({}).sort('price')
+    res.status(200).json({ products, nbHits: products.length});
   } catch (error) {
     console.log(error);
   }

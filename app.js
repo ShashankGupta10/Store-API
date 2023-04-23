@@ -18,10 +18,6 @@ app.use(express.json())
 
 //Routes
 
-app.get("/hello", (req, res)=>{
-    res.send("hello")
-})
-
 app.use('/api/v1/products', productRouter)
 
 // error handlers
