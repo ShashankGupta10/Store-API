@@ -6,7 +6,7 @@ const getAllProductsStatic = async (req, res) => {
         const products = await Product.find(req.query)
         console.log(req.query)
         if(products.length === 0){
-          res.send("No products in the database")
+          res.send("No products in the database");
         }
         else{
           res.status(200).json({ products, nbHits: products.length });
