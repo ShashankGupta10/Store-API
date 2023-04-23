@@ -1,8 +1,14 @@
 const express = require('express');
 const connectDB = require('./db/connect')
-require('dotenv').config()
+require('dotenv').config();
+require('express-async-errors')
 const app = express();
-port = 3000
+const notFoundMiddleware = require('./middleware/not-found')
+const errorHandlerMiddleware = require('./middleware/error-handler')
+const productRouter = require('./routes/products')
+
+const connString = process.env.MONGO_DB_URI
+const port = process.env.PORT || 3001
 
 
 
@@ -16,12 +22,19 @@ app.get("/hello", (req, res)=>{
     res.send("hello")
 })
 
+app.use('/api/v1/products', productRouter)
+
+// error handlers
+
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+
 
 //start server
 
 const StartServer = async () =>{
     try {
-        await connectDB(process.env.MONGO_DB_URI)
+        await connectDB(connString)
         console.log("Database Connected");
         app.listen(port, ()=>{
             console.log(`App listening on port ${port}`);
